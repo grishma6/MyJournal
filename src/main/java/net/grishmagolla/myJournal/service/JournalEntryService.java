@@ -5,6 +5,7 @@ import net.grishmagolla.myJournal.entity.User;
 import net.grishmagolla.myJournal.repository.JournalEntryRepository;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,21 +23,27 @@ public class JournalEntryService {
         this.userEntryService = userEntryService;
     }
 
+    @Transactional
     // Create journal entry and attach it to a user
     public void saveEntry(JournalEntry journalEntry, String userName) {
-        User user = userEntryService.findByUserName(userName);
+        try {
+            User user = userEntryService.findByUserName(userName);
 
-        if (user == null) {
-            throw new RuntimeException("User not found with username: " + userName);
+            if (user == null) {
+                throw new RuntimeException("User not found with username: " + userName);
+            }
+
+            journalEntry.setDate(LocalDateTime.now());
+            JournalEntry savedEntry = journalEntryRepository.save(journalEntry);
+
+            user.getJournalEntryList().add(savedEntry);
+            user.setUserName(null);
+            userEntryService.saveEntry(user);
+        } catch(Exception e) {
+            System.out.println(e);
+            throw new RuntimeException("An error occured while saving the entry", e);
         }
-
-        journalEntry.setDate(LocalDateTime.now());
-        JournalEntry savedEntry = journalEntryRepository.save(journalEntry);
-
-        user.getJournalEntryList().add(savedEntry);
-        userEntryService.saveEntry(user);
     }
-
     // Update existing journal entry only
     public void saveEntry(JournalEntry journalEntry) {
         journalEntryRepository.save(journalEntry);
