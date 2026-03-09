@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,7 +58,7 @@ public class JournalEntryControllerV2 {
         }
     }
 
-    @DeleteMapping("/{userName}/id/{myId}")
+    @DeleteMapping("id/{userName}/{myId}")
     public ResponseEntity<?> deleteJournalEntryById(@PathVariable String userName,
                                                     @PathVariable String myId) {
         journalEntryService.deleteById(new ObjectId(myId), userName);

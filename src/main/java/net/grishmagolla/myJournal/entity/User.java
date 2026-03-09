@@ -23,8 +23,9 @@ public class User {
     @NonNull
     public String userName;
     @NonNull
-    public String UserPassword;
+    public String userPassword;
     @DBRef
     private List<JournalEntry> journalEntryList = new ArrayList<>();
+    private List<String> roles; //roles can be admin, user
 
 }

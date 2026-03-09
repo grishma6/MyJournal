@@ -19,6 +19,7 @@ public class JournalEntry {
     private String content;
 
     public void setDate(LocalDateTime now) {
+        
     }
 }
 
