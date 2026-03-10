@@ -4,6 +4,7 @@ import net.grishmagolla.myJournal.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,10 +27,14 @@ public class SpringSecurity {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/journal/**","/user/**").authenticated()
-                .anyRequest().permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user").permitAll()
+                        .requestMatchers("/journal/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/user").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/user").authenticated()
+                        .anyRequest().permitAll()
                 )
                 .httpBasic(Customizer.withDefaults());
+
         return http.build();
     }
 
@@ -42,6 +47,6 @@ public class SpringSecurity {
 
     @Bean
     public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder(); //BCryptPasswordEncoder() creates password with randomize string
+        return new BCryptPasswordEncoder();
     }
 }
