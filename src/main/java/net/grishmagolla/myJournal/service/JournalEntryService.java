@@ -33,7 +33,7 @@ public class JournalEntryService {
                 throw new RuntimeException("User not found with username: " + userName);
             }
 
-            journalEntry.setDate(LocalDateTime.now());
+            //journalEntry.setDate(LocalDateTime.now());
             JournalEntry savedEntry = journalEntryRepository.save(journalEntry);
 
             user.getJournalEntryList().add(savedEntry);
