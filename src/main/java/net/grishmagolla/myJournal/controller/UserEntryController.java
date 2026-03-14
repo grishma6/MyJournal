@@ -21,8 +21,8 @@ public class UserEntryController {
 
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody User user){
-        userEntryService.saveEntry(user);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        userEntryService.saveNewUser(user); // was saveEntry before
+        return new ResponseEntity<>("User is created in DB", HttpStatus.CREATED);
     }
 
     @PutMapping
@@ -36,10 +36,9 @@ public class UserEntryController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteUser(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        userEntryRepository.deleteByUserName(authentication.getName());
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @DeleteMapping("/deleteAll")
+    public ResponseEntity<?> deleteAll(){
+        userEntryRepository.deleteAll();
+        return new ResponseEntity<>("All users deleted", HttpStatus.OK);
     }
 }

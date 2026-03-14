@@ -30,7 +30,7 @@ public class SpringSecurity {
                         .requestMatchers(HttpMethod.POST, "/user").permitAll()
                         .requestMatchers("/journal/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/user").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/user").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/user/deleteAll").permitAll()
                         .anyRequest().permitAll()
                 )
                 .httpBasic(Customizer.withDefaults());
