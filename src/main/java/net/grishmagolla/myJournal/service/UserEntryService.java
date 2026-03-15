@@ -27,9 +27,14 @@ public class UserEntryService {
         this.userEntryRepository = userEntryRepository;
     }
 
-    public void saveNewUser(User user){
-        user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
-        userEntryRepository.save(user);
+    public boolean saveNewUser(User user) {
+        try {
+            user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
+            userEntryRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public void saveAdmin(User user){
