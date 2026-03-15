@@ -1,3 +1,8 @@
 spring:
   profiles:
     active: dev
+
+#Setting this for the entire root
+#logging:
+#  level:
+#    root: ERROR
