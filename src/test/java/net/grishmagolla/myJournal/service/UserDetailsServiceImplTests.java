@@ -2,6 +2,7 @@ package net.grishmagolla.myJournal.service;
 
 import net.grishmagolla.myJournal.entity.User;
 import net.grishmagolla.myJournal.repository.UserEntryRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,11 +32,21 @@ public class UserDetailsServiceImplTests {
     @Mock
     private UserEntryRepository userEntryRepository;
 
+    private AutoCloseable closeable;
+
     //userEntryRepository as this is null we are intializing @BeforeEach
 
     @BeforeEach
-    void setUp(){
-        MockitoAnnotations.initMocks(this);
+    void setUp() {
+        //Returns an AutoCloseable object
+        //Can properly clean up after each test
+        //No memory leaks
+        closeable = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        closeable.close(); // clean up after each test
     }
 
     @Test
