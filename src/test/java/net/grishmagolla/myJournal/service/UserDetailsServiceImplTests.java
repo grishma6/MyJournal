@@ -3,8 +3,12 @@ package net.grishmagolla.myJournal.service;
 import net.grishmagolla.myJournal.entity.User;
 import net.grishmagolla.myJournal.repository.UserEntryRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.mockito.Mockito.*;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,14 +18,25 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+//@SpringBootTest
 public class UserDetailsServiceImplTests {
 
-    @Autowired
+    // this @InjectMocks ,@BeforeEach ,@Mock doesnot load the entire database and it is fast no need of @SpringBootTest
+
+
+    //@Autowired
+    @InjectMocks
     private UserDetailsServiceImpl userDetailsServiceImpl;
 
-    @MockitoBean
+    @Mock
     private UserEntryRepository userEntryRepository;
+
+    //userEntryRepository as this is null we are intializing @BeforeEach
+
+    @BeforeEach
+    void setUp(){
+        MockitoAnnotations.initMocks(this);
+    }
 
     @Test
     void loadUserByUsernameTest() {
