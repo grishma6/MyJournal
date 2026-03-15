@@ -1,8 +1,10 @@
 package net.grishmagolla.myJournal.controller;
 
+import net.grishmagolla.myJournal.api.response.WeatherResponse;
 import net.grishmagolla.myJournal.entity.User;
 import net.grishmagolla.myJournal.repository.UserEntryRepository;
 import net.grishmagolla.myJournal.service.UserEntryService;
+import net.grishmagolla.myJournal.service.WeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,8 @@ public class UserEntryController {
 
     @Autowired
     private UserEntryRepository userEntryRepository;
+    @Autowired
+    private WeatherService weatherService;
 
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody User user){
@@ -41,4 +45,18 @@ public class UserEntryController {
         userEntryRepository.deleteAll();
         return new ResponseEntity<>("All users deleted", HttpStatus.OK);
     }
+
+    @GetMapping
+    public ResponseEntity<?> greetings() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+        WeatherResponse weatherResponse = weatherService.getWeather("California");
+        if (weatherResponse != null) {
+            String greeting = "Hello!! " + userName + " Weather feels like "
+                    + weatherResponse.getCurrent().getFeelslike() + "°C";
+            return new ResponseEntity<>(greeting, HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Hello!! " + userName, HttpStatus.OK);
+    }
+
 }
