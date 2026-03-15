@@ -14,12 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.mockito.Mockito.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 
 import static org.mockito.Mockito.when;
 
 //@SpringBootTest
+@ActiveProfiles("dev")
 public class UserDetailsServiceImplTests {
 
     // this @InjectMocks ,@BeforeEach ,@Mock doesnot load the entire database and it is fast no need of @SpringBootTest
