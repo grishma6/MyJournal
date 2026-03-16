@@ -22,18 +22,10 @@ public class WeatherService {
     @Autowired
     private RestTemplate restTemplate;
 
-    //To consume External POST APIs effectively
     public WeatherResponse getWeather(String city) {
         String finalAPI = API.replace("CITY", city).replace("API_KEY", apiKey);
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set("key", "value");
-        User user = User.builder().userName("grishma").userPassword("grishma").build();
-        HttpEntity<User> httpEntity = new HttpEntity<>(user, httpHeaders);
-
         ResponseEntity<WeatherResponse> response = restTemplate.exchange(
-                finalAPI, HttpMethod.POST, httpEntity, WeatherResponse.class);
-        WeatherResponse body = response.getBody();
-        return body;
+                finalAPI, HttpMethod.GET, null, WeatherResponse.class);
+        return response.getBody();
     }
 }
