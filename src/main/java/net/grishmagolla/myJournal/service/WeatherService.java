@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 public class WeatherService {
 
     @Value("${weather.api.key}")
+    //@Value ->> security, flexibility, easy to change; final cannot be used; can be place in environment variable or applications.yml
     private String apiKey;
 
     private static final String API = "http://api.weatherstack.com/current?access_key=API_KEY&query=CITY";
