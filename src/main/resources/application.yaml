@@ -1,6 +1,13 @@
 spring:
   profiles:
     active: dev
+  data:
+    mongodb:
+      connection-string: mongodb+srv://gollagrishma807_db_user:Test12345@cluster0.l9kpsii.mongodb.net/journaldb?retryWrites=true&w=majority&appName=Cluster0
+      auto-index-creation: true
+
+server:
+  port: 8080
 
 #Setting this for the entire root
 #logging:

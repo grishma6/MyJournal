@@ -1,11 +1,8 @@
 spring:
   data:
     mongodb:
-      connection-string: ${MONGO_URI}
+      connection-string: mongodb+srv://gollagrishma807_db_user:Test12345@cluster0.l9kpsii.mongodb.net/journaldb?retryWrites=true&w=majority&appName=Cluster0
       auto-index-creation: true
-
 
 server:
   port: 8080
-  servlet:
-    context-path: /journal

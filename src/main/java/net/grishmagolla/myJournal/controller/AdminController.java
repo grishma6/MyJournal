@@ -1,6 +1,7 @@
 package net.grishmagolla.myJournal.controller;
 
 
+import net.grishmagolla.myJournal.cache.AppCache;
 import net.grishmagolla.myJournal.entity.User;
 import net.grishmagolla.myJournal.service.UserEntryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ public class AdminController {
 
     @Autowired
     private UserEntryService userEntryService;
+    @Autowired
+    private AppCache appCache;
 
     @GetMapping("/all-users")
     public ResponseEntity<?> getAllUsers(){
@@ -30,5 +33,10 @@ public class AdminController {
     @PostMapping("/create-new-user")
     public void createUser(@RequestBody User user){
         userEntryService.saveAdmin(user);
+    }
+
+    @GetMapping("/clear-app-cache")
+    public void clearAppCache(){
+        appCache.init();
     }
 }
