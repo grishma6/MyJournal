@@ -18,6 +18,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 
+import java.util.List;
+
 import static org.mockito.Mockito.when;
 
 //@SpringBootTest
@@ -53,7 +55,11 @@ public class UserDetailsServiceImplTests {
 
     @Test
     void loadUserByUsernameTest() {
-        User mockUser = new User("grishma", "grishma");
+        User mockUser = User.builder()
+                        .userName("grishma")
+                                .userPassword("grishma")
+                                        .roles(List.of("USER"))
+                                                .build();
         when(userEntryRepository.findByUserName(Mockito.anyString())).thenReturn(mockUser);
         UserDetails user = userDetailsServiceImpl.loadUserByUsername("grishma");
         Assertions.assertNotNull(user);
