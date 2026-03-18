@@ -3,6 +3,7 @@ package net.grishmagolla.myJournal.repository;
 
 import net.grishmagolla.myJournal.entity.User;
 import org.bson.types.ObjectId;
+import org.jspecify.annotations.Nullable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface UserEntryRepository extends MongoRepository<User, ObjectId> {
@@ -12,4 +13,5 @@ public interface UserEntryRepository extends MongoRepository<User, ObjectId> {
     void deleteByUserName(String userName);
 
 
+    @Nullable Object getUserForSA();
 }
