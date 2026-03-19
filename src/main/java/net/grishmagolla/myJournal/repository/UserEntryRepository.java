@@ -11,4 +11,6 @@ public interface UserEntryRepository extends MongoRepository<User, ObjectId> {
     User findByUserName(String userName);
 
     void deleteByUserName(String userName);
+
+    @Nullable Object getUserForSA();
 }
