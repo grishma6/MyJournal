@@ -3,6 +3,9 @@ spring:
     mongodb:
       connection-string: mongodb+srv://gollagrishma807_db_user:Test12345@cluster0.l9kpsii.mongodb.net/journaldb?retryWrites=true&w=majority&appName=Cluster0
       auto-index-creation: true
+  redis:
+    host: localhost
+    port: 6379
 
 server:
   port: 8080
