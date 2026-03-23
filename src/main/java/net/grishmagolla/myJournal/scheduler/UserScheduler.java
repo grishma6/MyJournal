@@ -4,9 +4,11 @@ import net.grishmagolla.myJournal.cache.AppCache;
 import net.grishmagolla.myJournal.entity.JournalEntry;
 import net.grishmagolla.myJournal.entity.User;
 import net.grishmagolla.myJournal.enums.Sentiment;
+import net.grishmagolla.myJournal.model.SentimentData;
 import net.grishmagolla.myJournal.repository.UserEntryRepository;
 import net.grishmagolla.myJournal.service.EmailService;
 import net.grishmagolla.myJournal.service.SentimentAnalysisService;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -23,15 +25,18 @@ public class UserScheduler {
     private final UserEntryRepository userEntryRepository;
     private final AppCache appCache;
     private final SentimentAnalysisService sentimentAnalysisService;
+    private final KafkaTemplate<String, SentimentData> kafkaTemplate;
 
     public UserScheduler(EmailService emailService,
                          UserEntryRepository userEntryRepository,
                          AppCache appCache,
-                         SentimentAnalysisService sentimentAnalysisService) {
+                         SentimentAnalysisService sentimentAnalysisService,
+                         KafkaTemplate<String, SentimentData> kafkaTemplate) {
         this.emailService = emailService;
         this.userEntryRepository = userEntryRepository;
         this.appCache = appCache;
         this.sentimentAnalysisService = sentimentAnalysisService;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     @Scheduled(cron = "0 0 9 * * SUN")
@@ -81,11 +86,11 @@ public class UserScheduler {
             }
 
             if (mostFrequentSentiment != null) {
-                emailService.sendEmail(
-                        user.getUserEmail(),
-                        "Sentiment for last 7 days",
-                        "Your most frequent sentiment in the last 7 days is: " + mostFrequentSentiment
-                );
+                SentimentData sentimentData = SentimentData.builder()
+                        .email(user.getUserEmail())
+                        .sentiment(mostFrequentSentiment.name())  // clean value
+                        .build();
+                kafkaTemplate.send("weekly-sentiments", sentimentData.getEmail(), sentimentData); // match topic
             }
         }
     }
