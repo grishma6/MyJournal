@@ -1,15 +1,28 @@
 package net.grishmagolla.myJournal.controller;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.grishmagolla.myJournal.entity.User;
+import net.grishmagolla.myJournal.service.UserDetailsServiceImpl;
 import net.grishmagolla.myJournal.service.UserEntryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import net.grishmagolla.myJournal.utilis.JwtUtil;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/public")
+@Slf4j
+@RequiredArgsConstructor
 public class PublicController {
-    @Autowired
-    private UserEntryService userEntryService;
+    private final UserEntryService userEntryService;
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailsServiceImpl userDetailsService;
+    private final JwtUtil jwtUtil;
+
 
     @GetMapping("/health-check")
     public String healthCheck(){
@@ -17,8 +30,23 @@ public class PublicController {
     }
 
     //Create User
-    @PostMapping("/create-user")
-    public void createUser(@RequestBody User user){
+    @PostMapping("/signup")
+    public void signUp(@RequestBody User user){
         userEntryService.saveEntry(user);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody User user){
+        try{
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getUserName(), user.getUserPassword()));
+            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUserName());
+            String jwt = jwtUtil.generateToken(userDetails.getUsername());
+            return new ResponseEntity<>(jwt, HttpStatus.OK);
+        }catch(Exception e){
+            log.error("Exception occured while createAuthenticationToken ", e);
+            return new ResponseEntity<>("Incorrect Username or password", HttpStatus.BAD_REQUEST);
+        }
+
     }
 }
