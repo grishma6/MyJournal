@@ -1,5 +1,6 @@
 package net.grishmagolla.myJournal.scheduler;
 
+import lombok.extern.slf4j.Slf4j;
 import net.grishmagolla.myJournal.cache.AppCache;
 import net.grishmagolla.myJournal.entity.JournalEntry;
 import net.grishmagolla.myJournal.entity.User;
@@ -16,8 +17,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class UserScheduler {
 
@@ -61,17 +62,16 @@ public class UserScheduler {
                             entry.getDate().isAfter(LocalDateTime.now().minusDays(7)))
                     .map(JournalEntry::getContent)
                     .map(sentimentAnalysisService::getSentiment)
-                    .collect(Collectors.toList());
+                    .toList();
 
             if (sentiments.isEmpty()) {
                 continue;
             }
 
             Map<Sentiment, Integer> sentimentCounts = new HashMap<>();
-
             for (Sentiment sentiment : sentiments) {
                 if (sentiment != null) {
-                    sentimentCounts.put(sentiment, sentimentCounts.getOrDefault(sentiment, 0) + 1);
+                    sentimentCounts.merge(sentiment, 1, Integer::sum);
                 }
             }
 
@@ -88,9 +88,20 @@ public class UserScheduler {
             if (mostFrequentSentiment != null) {
                 SentimentData sentimentData = SentimentData.builder()
                         .email(user.getUserEmail())
-                        .sentiment(mostFrequentSentiment.name())  // clean value
+                        .sentiment(mostFrequentSentiment.name())
                         .build();
-                kafkaTemplate.send("weekly-sentiments", sentimentData.getEmail(), sentimentData); // match topic
+                try {
+                    kafkaTemplate.send("weekly-sentiments", sentimentData.getEmail(), sentimentData);
+                    log.info("Sentiment published to Kafka for user: {}", sentimentData.getEmail());
+                } catch (Exception e) {
+                    log.error("Kafka send failed for user {}, falling back to email: {}",
+                            sentimentData.getEmail(), e.getMessage());
+                    emailService.sendEmail(
+                            sentimentData.getEmail(),
+                            "Sentiment for previous week",
+                            sentimentData.getSentiment()
+                    );
+                }
             }
         }
     }
