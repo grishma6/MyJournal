@@ -1,6 +1,7 @@
 package net.grishmagolla.myJournal.controller;
 
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import net.grishmagolla.myJournal.cache.AppCache;
 import net.grishmagolla.myJournal.entity.User;
 import net.grishmagolla.myJournal.service.UserEntryService;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
+@Tag(name = "Admin APIs")
 public class AdminController {
 
     @Autowired

@@ -1,5 +1,7 @@
 package net.grishmagolla.myJournal.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import net.grishmagolla.myJournal.entity.JournalEntry;
 import net.grishmagolla.myJournal.entity.User;
 import net.grishmagolla.myJournal.service.JournalEntryService;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/journal")
+@Tag(name = "Journal APIs")
 public class JournalEntryControllerV2 {
 
     private final JournalEntryService journalEntryService;
@@ -29,6 +32,7 @@ public class JournalEntryControllerV2 {
     }
 
     @GetMapping
+    @Operation(summary = "Get all Users")
     public ResponseEntity<?> getAllJournalEntriesOfUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();

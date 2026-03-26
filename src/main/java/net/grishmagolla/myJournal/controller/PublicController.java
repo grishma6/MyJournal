@@ -1,7 +1,9 @@
 package net.grishmagolla.myJournal.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.grishmagolla.myJournal.dto.UserDTO;
 import net.grishmagolla.myJournal.entity.User;
 import net.grishmagolla.myJournal.service.UserDetailsServiceImpl;
 import net.grishmagolla.myJournal.service.UserEntryService;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/public")
 @Slf4j
 @RequiredArgsConstructor
+@Tag(name = "Public APIs")
 public class PublicController {
     private final UserEntryService userEntryService;
     private final AuthenticationManager authenticationManager;
@@ -31,8 +34,13 @@ public class PublicController {
 
     //Create User
     @PostMapping("/signup")
-    public void signUp(@RequestBody User user){
-        userEntryService.saveEntry(user);
+    public void signUp(@RequestBody UserDTO user){
+        User newUser = new User();
+        newUser.setUserEmail(user.getUserEmail());
+        newUser.setUserPassword(user.getUserPassword());
+        newUser.setSentimentAnalysis(user.isSentimentAnalysis());
+        newUser.setUserName(user.getUserName());
+        userEntryService.saveEntry(newUser);
     }
 
     @PostMapping("/login")

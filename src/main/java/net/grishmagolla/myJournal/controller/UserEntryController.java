@@ -1,5 +1,6 @@
 package net.grishmagolla.myJournal.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import net.grishmagolla.myJournal.api.response.WeatherResponse;
 import net.grishmagolla.myJournal.entity.User;
 import net.grishmagolla.myJournal.repository.UserEntryRepository;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/user")
 @EnableScheduling
+@Tag(name = "User APIs")
 public class UserEntryController {
     @Autowired
     private UserEntryService userEntryService;
